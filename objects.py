@@ -2,7 +2,7 @@ import pygame
 
 SCREEN = WIDTH, HEIGHT = (600,200)
 
-class Ground():
+class Background():
     def __init__(self):
-        self.image =
+        self.image = pygame.image.load(Dino/gro)
         self.rect =
