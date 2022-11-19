@@ -3,7 +3,7 @@ import pygame
 SCREEN = WIDTH, HEIGHT = (600, 200)
 
 background = pygame.image.load('Dino/bg.png')
-bg_see = gameDisplay.blit(background,(600,200))
+
 
 class Background():
     def __init__(self):
