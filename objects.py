@@ -157,3 +157,12 @@ class Cloud(pygame.sprite.Sprite):
 
     def draw(self, win):
         win.blit(self.image, self.rect)
+
+class Star(pygame.sprite.Sprite):
+    def __init__(self, x, y, type):
+        super(Star,self).__init__()
+        image = pygame.image.load(f'Dino/stsrs.png')
+        self.image_list =[]
+        for i in range(3):
+            img = image.subsurface((0,20*(i),18,18))
+            self.image_list.append(img)
