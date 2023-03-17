@@ -9,9 +9,3 @@ win = pygame.display.set_made(SCREEN, pygame.NOFRAME)
 
 clock = pygame.time.Clock()
 FPS = 60
-
-
-
-
-
-
