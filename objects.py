@@ -139,7 +139,6 @@ class Cactus(pygame.sprite.Sprite):
     def draw(self, win):
         win.blit(self.image, self.rect)
 
-
 class Cloud(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super(Cloud, self).__init__()
@@ -158,6 +157,43 @@ class Cloud(pygame.sprite.Sprite):
     def draw(self, win):
         win.blit(self.image, self.rect)
 
+class Ptera(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super(Ptera, self).__init__()
+
+        self.image_list = []
+        for i in range(2):
+            scale = 0.65
+            img = pygame.image.load(f'Dino/Ptera..')
+            w,h =img.get_size()
+            img = pygame.transform,scale(img, (int(w*scale)),int(h*scale))
+            self.image_list.append(img)
+
+        self.index = 0
+        self.image = self.image_list[self.index]
+        self.rect = self.image.get_rect(center =(x,y))
+
+        self.counter = 0
+
+    def update(self, speed, dino):
+        if dino.alive:
+            self.rect.x -= speed
+            if self.rect.right <= 0:
+                self.kill()
+
+            self.counter +=1
+            if self.counter >= 6:
+                self.index = (self.index + 1) % len(self.image_list)
+                self.image = self.image_list [self.index]
+                self.counter = 0
+
+            self.mask =pygame.mask.from_surface(self.image)
+
+    def draw(self, win):
+        win.blit(self.image, self.rect)
+
+
+
 class Star(pygame.sprite.Sprite):
     def __init__(self, x, y, type):
         super(Star,self).__init__()
@@ -166,3 +202,17 @@ class Star(pygame.sprite.Sprite):
         for i in range(3):
             img = image.subsurface((0,20*(i),18,18))
             self.image_list.append(img)
+        self.image = self.image_list[type-1]
+        self.rect = self.image.get_rect()
+        self.rect.x =x
+        self.rect.y =y
+
+    def update(self, speed, dino):
+        if dino.alive:
+            self.rect.x -= speed
+            if self.rect.right <= 0:
+                self.kill()
+
+    def draw(self, win):
+        win.blit(self.image,self.rect)
+
