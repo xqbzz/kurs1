@@ -1,13 +1,15 @@
 import pygame
 
-SCREEN = WIDTH, HEIGHT = (600, 200)
+WIDTH = 600
+HEIGHT = 200
+SCREEN = WIDTH, HEIGHT
 
 background = pygame.image.load('Dino/bg.png')
 
 
 class Background():
     def __init__(self):
-        self.image = pygame.image.load('Dino/ground.png')
+        self.image = pygame.image.load('Dino/bg.png')
         self.rect = self.image.get_rect()
         self.width = self.image.get_width()
         self.x1 = 0
