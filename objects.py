@@ -1,53 +1,52 @@
 import pygame
 
 WIDTH = 600
-HEIGHT = 200
+HEIGHT = 400
 SCREEN = WIDTH, HEIGHT
-
-background = pygame.image.load('Dino/bg.png')
-
 
 class Background():
     def __init__(self):
-        self.image = pygame.image.load('Dino/bg.png')
+        self.image = pygame.image.load('Dino/bg1.png')
         self.rect = self.image.get_rect()
-        self.width = self.image.get_width()
+        self.width = 600
+        self.height = 400
+        self.ratio = WIDTH / self.width
+        self.scaled_width = int(self.width * self.ratio)
+        self.scaled_height = int(self.height * self.ratio)
         self.x1 = 0
-        self.x2 = self.width
-        self.y = 150
+        self.x2 = self.scaled_width
+        self.y = 0
+
 
     def update(self, speed):
-        self.x1 -= speed
-        self.x2 -= speed
-        if self.x1 <= -self.width:
-            self.x1 = self.width
-        if self.x2 <= -self.width:
-            self.x2 = self.width
-
+        self.x1 -= int(speed * self.ratio)
+        self.x2 -= int(speed * self.ratio)
+        if self.x1 <= -self.scaled_width:
+            self.x1 = self.scaled_width
+        if self.x2 <= -self.scaled_width:
+            self.x2 = self.scaled_width
     def draw(self, win):
-        win.blit(self.image, (self.x1, self.y))
-        win.blit(self.image, (self.x2, self.y))
-
-
+        win.blit(pygame.transform.scale(self.image, (self.scaled_width, self.scaled_height)), (self.x1, self.y))
+        win.blit(pygame.transform.scale(self.image, (self.scaled_width, self.scaled_height)), (self.x2, self.y))
 class Dino():
     def __init__(self, x, y):
-        self.x, self.base = x, y
+        self.x, self.y, self.base = x, y, y
 
         self.run_list = []
         self.duck_list = []
 
         for i in range(1, 4):
             dino_img = pygame.image.load(f'Dino/Dino/{i}.png')
-            dino_img = pygame.transform.scale(dino_img, (52, 58))
+            dino_img = pygame.transform.scale(dino_img, (44, 47))
             self.run_list.append(dino_img)
 
         for i in range(4, 6):
             dino_img = pygame.image.load(f'Dino/Dino/{i}.png')
-            dino_img = pygame.transform.scale(dino_img, (70, 38))
+            dino_img = pygame.transform.scale(dino_img, (62, 36))
             self.duck_list.append(dino_img)
 
         self.dead_image = pygame.image.load(f'Dino/Dino/8.png')
-        self.dead_image = pygame.transform.scale(self.dead_image, (52, 58))
+        self.dead_image = pygame.transform.scale(self.dead_image, (44, 47))
 
         self.reset()
 
@@ -119,7 +118,7 @@ class Cactus(pygame.sprite.Sprite):
 
         self.image_list = []
         for i in range(5):
-            scale = 0.65
+            scale = 0.7
             img = pygame.image.load(f'Dino/Cactus/{i + 1}.png')
             w, h = img.get_size()
             img = pygame.transform.scale(img, (int(w * scale), int(h * scale)))
@@ -168,7 +167,7 @@ class Ptera(pygame.sprite.Sprite):
         self.image_list = []
         for i in range(2):
             scale = 0.65
-            img = pygame.image.load(f'Dino/Ptera..')
+            img = pygame.image.load(f'Dino/Ptera/{i+1}.png')
             w, h = img.get_size()
             img = pygame.transform.scale(img, (int(w * scale)), int(h * scale))
             self.image_list.append(img)
@@ -200,7 +199,7 @@ class Ptera(pygame.sprite.Sprite):
 class Star(pygame.sprite.Sprite):
     def __init__(self, x, y, type):
         super(Star, self).__init__()
-        image = pygame.image.load(f'Dino/stsrs.png')
+        image = pygame.image.load(f'Dino/stars.png')
         self.image_list = []
         for i in range(3):
             img = image.subsurface((0, 20 * (i), 18, 18))
