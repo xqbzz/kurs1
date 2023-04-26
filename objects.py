@@ -145,7 +145,7 @@ class Cloud(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super(Cloud, self).__init__()
         self.image = pygame.image.load(f'Dino/cloud.png')
-        self.image = pygame.transform.scale(self.image, (60, 18))
+        self.image = pygame.transform.scale(self.image, (60,20))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -169,7 +169,7 @@ class Ptera(pygame.sprite.Sprite):
             scale = 0.65
             img = pygame.image.load(f'Dino/Ptera/{i+1}.png')
             w, h = img.get_size()
-            img = pygame.transform.scale(img, (int(w * scale)), int(h * scale))
+            img = pygame.transform.scale(img, (int(w * scale), int(h * scale)))
             self.image_list.append(img)
 
         self.index = 0

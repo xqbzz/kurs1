@@ -134,7 +134,7 @@ while running:
                     cactus_group.add(cactus)
 
             if counter % cloud_time == 0:
-                y = random.randint(40,100)
+                y = random.randint(100,100)
                 cloud = Cloud(WIDTH, y)
                 cloud_group.add(cloud)
             
