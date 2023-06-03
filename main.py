@@ -4,6 +4,7 @@ import os
 import av
 import imageio
 import datetime
+import pygame.font
 
 from objects import Background, Dino, Cactus, Cloud, Ptera, Star
 
@@ -12,6 +13,7 @@ SCREEN = WIDTH, HEIGHT = (600, 400)
 win = pygame.display.set_mode(SCREEN, pygame.NOFRAME)
 
 clock = pygame.time.Clock()
+font = pygame.font.SysFont('Arial', 18)
 FPS = 60
 record = False
 output_folder = "recordings"  # Папка для сохранения записей(название любое)
@@ -23,6 +25,7 @@ if not os.path.exists(output_folder):
 WHITE = (225,225,225)
 BLACK = (0, 0, 0)
 GRAY = (32, 33, 36)
+GREEN = (0, 255, 0)
 
 # IMAGES *********************************************************************
 
@@ -30,6 +33,9 @@ start_img = pygame.image.load('Dino/start_img.png')
 start_img = pygame.transform.scale(start_img, (400, 400))
 start_rect = start_img.get_rect()
 start_rect.center = (WIDTH // 2, HEIGHT // 2)
+
+pause_img = pygame.image.load('Dino/Button/Pause.png')
+pause_img = pygame.transform.scale(pause_img, (210, 100))
 
 game_over_img = pygame.image.load('Dino/game_over.png')
 game_over_img = pygame.transform.scale(game_over_img, (200, 36))
@@ -125,6 +131,7 @@ start_page = True
 mouse_pos = (-1, -1)
 
 running = True
+fps_text = font.render("", True, GREEN)
 paused = False
 while running:
     jump = False
@@ -174,7 +181,7 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = (-1, -1)
-
+        
     if start_page:
         win.blit(start_img, (100, 0))
     else:
@@ -235,12 +242,17 @@ while running:
                         SPEED = 0
                         dino.alive = False
                         # die_fx.play()
+					
+		# Расчет и отображение FPS
+        fps = clock.get_fps()
+        fps_text = font.render(f"FPS: {int(fps)}", True, GREEN)
 
         if paused:
-            win.blit(start_img, (100, 0))  # Отображение изображения start_img
+            win.blit(pause_img, (180, 200))  # Отображение изображения start_img
             pygame.display.update()
             continue  # Пропуск обновления игры в режиме паузы
-
+        
+		
         ground.update(SPEED)
         ground.draw(win)
         cloud_group.update(SPEED - 3, dino)
@@ -271,6 +283,8 @@ while running:
             if replay_rect.collidepoint(mouse_pos):
                 reset()
 
+    # Вывод FPS на экран
+    win.blit(fps_text, (10, 10))
     pygame.draw.rect(win, WHITE, (0, 0, WIDTH, HEIGHT), 4)
     clock.tick(FPS)
     pygame.display.update()
