@@ -62,7 +62,6 @@ button_selected_ultra_img = pygame.image.load('Dino/Button/UltraRED.png')
 
 jump_fx = pygame.mixer.Sound('Dino/Sound/jump.wav')
 die_fx = pygame.mixer.Sound('Dino/Sound/die.wav')
-checkpoint_fx = pygame.mixer.Sound('Dino/Sound/checkPoint.wav')
 collect_star_fx = pygame.mixer.Sound('Dino/Sound/collect_star.wav')
 background_fx = pygame.mixer.Sound('Dino/Sound/background.wav')
 retry_fx = pygame.mixer.Sound('Dino/Sound/retry.wav')
@@ -121,7 +120,7 @@ GODMODE = False
 DAYMODE = False
 LYAGAMI = False
 counter = 0
-enemy_time = 80
+enemy_time = 120
 cloud_time = 500
 stars_time = 150
 
@@ -137,7 +136,7 @@ play_retry = False
 
 start_page = True
 mouse_pos = (-1, -1)
-background_fx.set_volume(0.2)
+background_fx.set_volume(0.1)
 background_fx.play(-1)
 
 running = True
@@ -205,7 +204,7 @@ while running:
                     ptera = Ptera(WIDTH, y)
                     ptera_group.add(ptera)
                 else:
-                    type = random.randint(1, 4)
+                    type = random.randint(1, 9)
                     cactus = Cactus(type)
                     cactus_group.add(cactus)
 
@@ -298,7 +297,7 @@ while running:
         if not dino.alive:
             win.blit(game_over_img, (WIDTH // 2 - 100, 55))
             win.blit(replay_img, replay_rect)
-            retry_fx.set_volume(0.07)
+            retry_fx.set_volume(0.05)
             if not play_retry:  
                 retry_fx.play()
                 play_retry_fx = True  

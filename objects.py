@@ -119,32 +119,37 @@ class Dino():
 
 
 class Cactus(pygame.sprite.Sprite):
-	def __init__(self, type):
-		super(Cactus, self).__init__()
+    def __init__(self, type):
+        super(Cactus, self).__init__()
 
-		self.image_list = []
-		for i in range(8):
-			scale = 0.75
-			img = pygame.image.load(f'DIno/Cactus/{i+1}.png')
-			w, h = img.get_size()
-			img = pygame.transform.scale(img, (int(w*scale), int(h*scale)))
-			self.image_list.append(img)
+        self.image_list = []
+        for i in range(9):
+            scale = 0.75
+            img = pygame.image.load(f'DIno/Cactus/{i+1}.png')
+            w, h = img.get_size()
+            img = pygame.transform.scale(img, (int(w*scale), int(h*scale)))
+            self.image_list.append(img)
 
-		self.image = self.image_list[type-1]
-		self.rect = self.image.get_rect()
-		self.rect.x = WIDTH + 10
-		self.rect.bottom = 385
+        if 1 <= type <= 9:
+            self.image = self.image_list[type - 1]
+        else:
+            self.image = self.image_list[0]  # По умолчанию используется первое изображение из списка
 
-	def update(self, speed, dino):
-		if dino.alive:
-			self.rect.x -= speed
-			if self.rect.right <= 0:
-				self.kill()
+        self.rect = self.image.get_rect()
+        self.rect.x = WIDTH + 10
+        self.rect.bottom = 385
 
-			self.mask = pygame.mask.from_surface(self.image)
+    def update(self, speed, dino):
+        if dino.alive:
+            self.rect.x -= speed
+            if self.rect.right <= 0:
+                self.kill()
 
-	def draw(self, win):
-		win.blit(self.image, self.rect)
+            self.mask = pygame.mask.from_surface(self.image)
+
+    def draw(self, win):
+        win.blit(self.image, self.rect)
+
 
 
 class Ptera(pygame.sprite.Sprite):
