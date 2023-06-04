@@ -1,4 +1,5 @@
 import pygame
+import math
 
 SCREEN = WIDTH, HEIGHT = (600, 400)
 
@@ -54,6 +55,7 @@ class Dino():
 		self.gravity = 1
 		self.jumpHeight = 15
 		self.isJumping = False
+		self.score = 0
 
 	def reset(self):
 		self.index = 0
@@ -108,6 +110,9 @@ class Dino():
 
 		else:
 			self.image = self.dead_image
+
+	def collect_star(self):
+		self.score += 50
 
 	def draw(self, win):
 		win.blit(self.image, self.rect)
@@ -182,7 +187,7 @@ class Cloud(pygame.sprite.Sprite):
 	def __init__(self, x, y):
 		super(Cloud, self).__init__()
 		self.image = pygame.image.load(f'DIno/cloud.png')
-		self.image = pygame.transform.scale(self.image, (60, 18))
+		self.image = pygame.transform.scale(self.image, (90, 30))
 		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
@@ -197,23 +202,30 @@ class Cloud(pygame.sprite.Sprite):
 		win.blit(self.image, self.rect)
 
 class Star(pygame.sprite.Sprite):
-	def __init__(self, x, y, type):
-		super(Star, self).__init__()
-		image = pygame.image.load(f'Dino/stars.png')
-		self.image_list = []
-		for i in range(3):
-			img = image.subsurface((0, 20*(i), 18, 18))
-			self.image_list.append(img)
-		self.image = self.image_list[type-1]
-		self.rect = self.image.get_rect()
-		self.rect.x = x
-		self.rect.y = y
+    def __init__(self, x, y, type):
+        super(Star, self).__init__()
+        image = pygame.image.load(f'Dino/stars.png')
+        self.image_list = []
+        for i in range(3):
+            img = image.subsurface((0, 20*(i), 18, 18))
+            self.image_list.append(img)
+        self.image = self.image_list[type-1]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.score = 0
 
-	def update(self, speed, dino):
-		if dino.alive:
-			self.rect.x -= speed
-			if self.rect.right <= 0:
-				self.kill()
-
-	def draw(self, win):
-		win.blit(self.image, self.rect)
+    def update(self, speed, dino, score):
+        if dino.alive:
+            self.rect.x -= speed
+            angle = 45  # Угол наклона (в градусах)
+            radians = math.radians(angle)
+            self.rect.y += int(speed * math.sin(radians))
+            if self.rect.y > HEIGHT:
+                self.kill()
+            if pygame.sprite.collide_mask(dino, self):
+                self.kill()
+                score += 50  # Увеличение счета на 50 очков
+		
+def draw(self, win):
+	win.blit(self.image, self.rect)

@@ -8,26 +8,28 @@ import pygame.font
 
 from objects import Background, Dino, Cactus, Cloud, Ptera, Star
 
+# Инициализация Pygame
 pygame.init()
-SCREEN = WIDTH, HEIGHT = (600, 400)
+SCREEN = WIDTH, HEIGHT = (600, 400) # Размеры экрана
 win = pygame.display.set_mode(SCREEN, pygame.NOFRAME)
 
-clock = pygame.time.Clock()
+clock = pygame.time.Clock() # Отображение FPS
 font = pygame.font.SysFont('Arial', 18)
 FPS = 60
-record = False
-output_folder = "recordings"  # Папка для сохранения записей(название любое)
+record = False # Флаг для записи
+output_folder = "recordings"  # Папка для сохранения записей(название любое, создаст сама если нет)
 video_writer = None
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
-# COLORS *********************************************************************
+
+#Цвета
 
 WHITE = (225,225,225)
 BLACK = (0, 0, 0)
 GRAY = (32, 33, 36)
 GREEN = (0, 255, 0)
 
-# IMAGES *********************************************************************
+# Изображния
 
 start_img = pygame.image.load('Dino/start_img.png')
 start_img = pygame.transform.scale(start_img, (400, 400))
@@ -35,7 +37,7 @@ start_rect = start_img.get_rect()
 start_rect.center = (WIDTH // 2, HEIGHT // 2)
 
 pause_img = pygame.image.load('Dino/Button/Pause.png')
-pause_img = pygame.transform.scale(pause_img, (210, 100))
+pause_img = pygame.transform.scale(pause_img, (250, 75))
 
 game_over_img = pygame.image.load('Dino/game_over.png')
 game_over_img = pygame.transform.scale(game_over_img, (200, 36))
@@ -49,19 +51,23 @@ replay_rect.y = 100
 numbers_img = pygame.image.load('Dino/numbers.png')
 numbers_img = pygame.transform.scale(numbers_img, (120, 12))
 
+# Кнопки для уровней игры(Not WORKING)
 button_nornal_img = pygame.image.load('Dino/Button/Normal.png')
 button_hard_img = pygame.image.load('Dino/Button/Hard.png')
 button_ultra_img = pygame.image.load('Dino/Button/Ultra.png')
 button_selected_normal_img = pygame.image.load('Dino/Button/NormalRED.png')
 button_selected_hard_img = pygame.image.load('Dino/Button/HardRED.png')
 button_selected_ultra_img = pygame.image.load('Dino/Button/UltraRED.png')
-# SOUNDS *********************************************************************
+# Звуки
 
-#jump_fx = pygame.mixer.Sound('Sounds/jump.wav')
-#die_fx = pygame.mixer.Sound('Sounds/die.wav')
-#checkpoint_fx = pygame.mixer.Sound('Sounds/checkPoint.wav')
+jump_fx = pygame.mixer.Sound('Dino/Sound/jump.wav')
+die_fx = pygame.mixer.Sound('Dino/Sound/die.wav')
+checkpoint_fx = pygame.mixer.Sound('Dino/Sound/checkPoint.wav')
+collect_star_fx = pygame.mixer.Sound('Dino/Sound/collect_star.wav')
+background_fx = pygame.mixer.Sound('Dino/Sound/background.wav')
+retry_fx = pygame.mixer.Sound('Dino/Sound/retry.wav')
 
-# OBJECTS & GROUPS ***********************************************************
+# Создание игровых объектов и групп
 
 ground = Background()
 dino = Dino(50, 160)
@@ -71,16 +77,13 @@ ptera_group = pygame.sprite.Group()
 cloud_group = pygame.sprite.Group()
 stars_group = pygame.sprite.Group()
 
+# Создание объекта контейнера для записи видео
 container = av.open(os.path.join(output_folder, "game_record.mp4"), mode='w')
 video_stream = container.add_stream('libx264', rate=60)
 video_stream.width = WIDTH
 video_stream.height = HEIGHT
 
-button_normal_pos = (100, 100)
-button_hard_pos = (200, 100)
-button_ultra_pos = (300, 100)
-
-# FUNCTIONS ******************************************************************
+# Функции для записи видео
 def start_record():
     global record, video_writer
     record = True
@@ -94,7 +97,8 @@ def stop_record():
     record = False
     video_writer.close()
 
-def reset():
+# Функция сброса игры
+def reset(): 
 	global counter, SPEED, score, high_score
 
 	if score and score >= high_score:
@@ -111,6 +115,7 @@ def reset():
 
 	dino.reset()
 
+# Переменные и флаги
 keys = []
 GODMODE = False
 DAYMODE = False
@@ -118,7 +123,7 @@ LYAGAMI = False
 counter = 0
 enemy_time = 80
 cloud_time = 500
-stars_time = 175
+stars_time = 150
 
 SPEED = 5
 jump = False
@@ -127,12 +132,18 @@ duck = False
 score = 0
 high_score = 0
 
+game_over = False
+play_retry = False
+
 start_page = True
 mouse_pos = (-1, -1)
+background_fx.set_volume(0.2)
+background_fx.play(-1)
 
 running = True
-fps_text = font.render("", True, GREEN)
+fps_text = font.render("", True, GREEN)#FPS текст( можно поменять цвет и Front)
 paused = False
+# Главный цикл игры
 while running:
     jump = False
     for event in pygame.event.get():
@@ -158,13 +169,13 @@ while running:
                         start_page = False
                     elif dino.alive:
                         jump = True
-                        # jump_fx.play()
+                        jump_fx.play()
                     else:
                         reset()
 
                 if event.key == pygame.K_UP:
                     jump = True
-                    # jump_fx.play()
+                    jump_fx.play()
 
                 if event.key == pygame.K_DOWN:
                     duck = True
@@ -181,7 +192,8 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = (-1, -1)
-        
+    
+    # Отображение стартовой страницы    
     if start_page:
         win.blit(start_img, (100, 0))
     else:
@@ -225,7 +237,7 @@ while running:
                     if pygame.sprite.collide_mask(dino, cactus):
                         SPEED = 0
                         dino.alive = False
-                        # die_fx.play()
+                        die_fx.play()
 
                 for cactus in ptera_group:
                     if LYAGAMI:
@@ -241,7 +253,7 @@ while running:
                     if pygame.sprite.collide_mask(dino, ptera):
                         SPEED = 0
                         dino.alive = False
-                        # die_fx.play()
+                        die_fx.play()
 					
 		# Расчет и отображение FPS
         fps = clock.get_fps()
@@ -252,12 +264,17 @@ while running:
             pygame.display.update()
             continue  # Пропуск обновления игры в режиме паузы
         
-		
+		# Обновление и отображение объектов
         ground.update(SPEED)
         ground.draw(win)
         cloud_group.update(SPEED - 3, dino)
         cloud_group.draw(win)
-        stars_group.update(SPEED - 3, dino)
+        stars_group.update(SPEED - 3, dino,score)
+        for star in stars_group:
+            if pygame.sprite.collide_rect(dino, star):
+                star.kill()
+                collect_star_fx.play()
+                score += 50  
         stars_group.draw(win)
         cactus_group.update(SPEED, dino)
         cactus_group.draw(win)
@@ -266,6 +283,7 @@ while running:
         dino.update(jump, duck)
         dino.draw(win)
 
+        # Отображение счета и рекорда
         string_score = str(score).zfill(5)
         for i, num in enumerate(string_score):
             win.blit(numbers_img, (520 + 11 * i, 10), (10 * int(num), 0, 10, 12))
@@ -275,13 +293,20 @@ while running:
             string_score = f'{high_score}'.zfill(5)
             for i, num in enumerate(string_score):
                 win.blit(numbers_img, (455 + 11 * i, 10), (10 * int(num), 0, 10, 12))
-
+        
+        # Обработка конца игры и возможности перезапуска
         if not dino.alive:
             win.blit(game_over_img, (WIDTH // 2 - 100, 55))
             win.blit(replay_img, replay_rect)
+            retry_fx.set_volume(0.07)
+            if not play_retry:  
+                retry_fx.play()
+                play_retry_fx = True  
+            game_over = True  
+            
+        if replay_rect.collidepoint(mouse_pos):
+            reset()
 
-            if replay_rect.collidepoint(mouse_pos):
-                reset()
 
     # Вывод FPS на экран
     win.blit(fps_text, (10, 10))
@@ -289,6 +314,7 @@ while running:
     clock.tick(FPS)
     pygame.display.update()
 
+    # Запись кадра в видеофайл, если флаг записи активен
     if record:
         frame = pygame.surfarray.array3d(win).swapaxes(0, 1)
         packet = av.VideoFrame.from_ndarray(frame, format='rgb24')
