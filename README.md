@@ -2,7 +2,7 @@
 
 Обновлённая игра Dino, основанная на игре "Бегущий динозавр" в браузере Chrome.
 
-![Dino Run](Dino\logo.png)
+![Dino Run](logo.png)
 
 ## Описание
 
